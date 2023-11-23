@@ -1,7 +1,6 @@
 package com.example.pazaramapokedex.data.repository
 
 import com.example.pazaramapokedex.data.remote.Api
-import com.example.pazaramapokedex.domain.model.PokemonImage
 import com.example.pazaramapokedex.domain.repository.RepositoryInterface
 import com.example.pazaramapokedex.utils.Resource
 import com.example.pokedex.domain.model.PokemonResponse
@@ -50,22 +49,7 @@ class Repository @Inject constructor(
         }
     }
 
-    override suspend fun getPokemonImage(id : Int) : Resource<PokemonImage> {
 
-        return try {
-
-            val response = retrofitApi.getPokemonImage(id)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    return@let Resource.success(it)
-                } ?: Resource.error("Error",null)
-            } else {
-                Resource.error("Error",null)
-            }
-        } catch (e: Exception) {
-            Resource.error("No data!",null)
-        }
-    }
 
 
 

@@ -1,6 +1,5 @@
 package com.example.pazaramapokedex.data.remote
 
-import com.example.pazaramapokedex.domain.model.PokemonImage
 import com.example.pokedex.domain.model.PokemonResponse
 import com.example.pokedex.domain.model.SinglePokemonResponse
 import retrofit2.Response
@@ -22,9 +21,5 @@ interface Api {
         @Path("id") id: Int
     ): Response<SinglePokemonResponse>
 
-    @GET("pokemon/{id}/")
-    suspend fun getPokemonImage(
-        @Path("id") id: Int
-    ): Response<PokemonImage>
 
 }
