@@ -8,30 +8,22 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.pazaramapokedex.R
 import com.example.pazaramapokedex.databinding.FragmentDetailBinding
 import com.example.pazaramapokedex.domain.model.Type
 import com.example.pazaramapokedex.presentation.adapters.TypesAdapter
 import com.example.pazaramapokedex.utils.PokemonTypeUtils
 import com.example.pazaramapokedex.utils.Status
 import com.example.pazaramapokedex.utils.capitalize
-import com.example.pazaramapokedex.utils.extractId
 import com.example.pazaramapokedex.utils.loadImage
 import com.example.pokedex.domain.model.SinglePokemonResponse
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+
 import javax.inject.Inject
 
 
@@ -45,17 +37,15 @@ class DetailFragment @Inject constructor(
 
     lateinit var viewModel: DetailViewModel
 
-    var url : Int  = 0
+    var deneme : Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments.let {
-            url = it?.getInt("id")!!
-
+            var id = it?.getInt("id")!!
         }
-
     }
 
     override fun onCreateView(
@@ -77,7 +67,7 @@ class DetailFragment @Inject constructor(
         binding.ribbonRecyclerView.adapter = typesRecyclerAdapter
         binding.ribbonRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL,false)
 
-        viewModel.getSinglePokemon(id)
+        viewModel.getSinglePokemon(deneme)
 
         onClick()
         subscribeToObservers()
@@ -91,13 +81,12 @@ class DetailFragment @Inject constructor(
             when(singlePokemonResponse.status){
                 Status.SUCCESS -> {
 
-
                     val data = singlePokemonResponse.data
 
                     typesRecyclerAdapter.typeList = data?.types as MutableList<Type>
 
-                        setColors(data)
-                        setText(data)
+                    setColors(data)
+                    setText(data)
 
                     binding.progressbar.visibility = View.GONE
                     binding.header.visibility = View.VISIBLE

@@ -14,12 +14,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.pazaramapokedex.R
 import com.example.pazaramapokedex.databinding.FragmentMainBinding
-import com.example.pazaramapokedex.domain.model.PokemonImage
-import com.example.pazaramapokedex.domain.model.PokemonItemList
-import com.example.pazaramapokedex.domain.model.Type
 import com.example.pazaramapokedex.presentation.adapters.MainAdapter
 import com.example.pazaramapokedex.utils.Status
-import com.example.pazaramapokedex.utils.extractId
 import com.example.pokedex.domain.model.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -60,7 +56,7 @@ class MainFragment @Inject constructor(
 
         pokemonRecyclerAdapter.setOnItemClickListener {
             val args = Bundle()
-            args.putInt("url", it)
+            args.putInt("id", it)
             findNavController().navigate(R.id.action_mainFragment_to_detailFragment,args)
         }
     }
@@ -73,26 +69,8 @@ class MainFragment @Inject constructor(
                 Status.SUCCESS -> {
                     binding.progressbar.visibility = View.GONE
 
-                    //pokemonResponse.data?.results?.map { viewModel.getImage(it?.url!!) }
-
-                    val data = pokemonResponse.data?.results as MutableList<Result>
-
-                    for (i in data) {
-                        viewModel.getPokemonImage(i.url?.extractId()!!)
-                    }
-
-                    viewModel.imageList.observe(viewLifecycleOwner, Observer {
-
-                        if (it.size.equals(20)) {
-                            viewModel.setPokemonItemData()
-
-                            val data = viewModel.pokemonItemList.value
-
-                            pokemonRecyclerAdapter.pokemonResponseList = data as MutableList<PokemonItemList>
-                        }
-                    })
+                    pokemonRecyclerAdapter.pokemonResponseList = pokemonResponse.data?.results as MutableList<Result>
                 }
-
                 Status.ERROR -> {
                     Toast.makeText(
                         requireContext(),

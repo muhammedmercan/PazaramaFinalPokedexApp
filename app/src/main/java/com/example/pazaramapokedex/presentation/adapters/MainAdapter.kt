@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pazaramapokedex.databinding.ItemPokemonBinding
-import com.example.pazaramapokedex.domain.model.PokemonItemList
+import com.example.pazaramapokedex.utils.extractId
 import com.example.pazaramapokedex.utils.loadImage
 import com.example.pokedex.domain.model.Result
 
@@ -19,20 +19,20 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
 
     class ViewHolder(val binding: ItemPokemonBinding) : RecyclerView.ViewHolder(binding.root)
 
-    private val diffUtil = object : DiffUtil.ItemCallback<PokemonItemList>() {
-        override fun areItemsTheSame(oldItem: PokemonItemList, newItem: PokemonItemList): Boolean {
+    private val diffUtil = object : DiffUtil.ItemCallback<Result>() {
+        override fun areItemsTheSame(oldItem: Result, newItem: Result): Boolean {
             return oldItem == newItem
         }
 
         //TODO .name kısmına bakılacak
-        override fun areContentsTheSame(oldItem: PokemonItemList, newItem: PokemonItemList): Boolean {
-            return oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: Result, newItem: Result): Boolean {
+            return oldItem.url?.extractId() == newItem.url?.extractId()
         }
     }
 
     private val recyclerListDiffer = AsyncListDiffer(this, diffUtil)
 
-    var pokemonResponseList: MutableList<PokemonItemList>
+    var pokemonResponseList: MutableList<Result>
         get() = recyclerListDiffer.currentList
         set(value) = recyclerListDiffer.submitList(value)
 
@@ -50,13 +50,11 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.binding.name.text = pokemonResponseList[position].name
-
-        holder.binding.imgPokemon.loadImage(pokemonResponseList[position].imgUrl)
-
+        holder.binding.imgPokemon.loadImage(pokemonResponseList[position].getImageUrl())
 
         holder.itemView.setOnClickListener() {
             onItemClickListener?.let {
-                it(pokemonResponseList[position].id)
+                it(pokemonResponseList[position].url?.extractId()!!)
             }
         }
 
