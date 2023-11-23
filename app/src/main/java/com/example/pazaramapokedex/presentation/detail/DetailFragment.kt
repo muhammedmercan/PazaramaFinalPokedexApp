@@ -19,6 +19,7 @@ import com.example.pazaramapokedex.R
 import com.example.pazaramapokedex.databinding.FragmentDetailBinding
 import com.example.pazaramapokedex.domain.model.Type
 import com.example.pazaramapokedex.presentation.adapters.TypesAdapter
+import com.example.pazaramapokedex.utils.PokemonTypeUtils
 import com.example.pazaramapokedex.utils.Status
 import com.example.pazaramapokedex.utils.capitalize
 import com.example.pazaramapokedex.utils.extractId
@@ -163,34 +164,7 @@ class DetailFragment @Inject constructor(
 
     private fun setColors(data: SinglePokemonResponse) {
 
-        var color : Int
-
-        color = ContextCompat.getColor(requireContext(),R.color.colorPrimary)
-
-        when(data?.types?.get(0)?.type?.name!!) {
-
-
-            //TODO daha iyi bir yöntem var mı bakılacak
-            "normal" -> color = ContextCompat.getColor(requireContext(),R.color.type_normal)
-            "fire" -> color = ContextCompat.getColor(requireContext(),R.color.type_fire)
-            "water" -> color = ContextCompat.getColor(requireContext(),R.color.type_water)
-            "electric" -> color = ContextCompat.getColor(requireContext(),R.color.type_electric)
-            "grass" -> color = ContextCompat.getColor(requireContext(),R.color.type_grass)
-            "ice" -> color = ContextCompat.getColor(requireContext(),R.color.type_ice)
-            "fighting" -> color = ContextCompat.getColor(requireContext(),R.color.type_fighting)
-            "poison" -> color = ContextCompat.getColor(requireContext(),R.color.type_poison)
-            "ground" -> color = ContextCompat.getColor(requireContext(),R.color.type_ground)
-            "flying" -> color = ContextCompat.getColor(requireContext(),R.color.type_flying)
-            "psychic" -> color = ContextCompat.getColor(requireContext(),R.color.type_psychic)
-            "bug" -> color = ContextCompat.getColor(requireContext(),R.color.type_bug)
-            "rock" -> color = ContextCompat.getColor(requireContext(),R.color.type_rock)
-            "ghost" -> color = ContextCompat.getColor(requireContext(),R.color.type_ghost)
-            "dragon" -> color = ContextCompat.getColor(requireContext(),R.color.type_dragon)
-            "dark" -> color = ContextCompat.getColor(requireContext(),R.color.type_dark)
-            "steel" -> color = ContextCompat.getColor(requireContext(),R.color.type_steel)
-            "fairy" -> color = ContextCompat.getColor(requireContext(),R.color.type_fairy)
-
-        }
+        val color = PokemonTypeUtils.getTypeColor(data?.types?.get(0)?.type?.name!!)
 
         binding.header.setBackgroundColor(color)
 
@@ -234,7 +208,6 @@ class DetailFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-
         _binding = null
 
     }
