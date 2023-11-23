@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.pazaramapokedex.R
 import com.example.pazaramapokedex.databinding.FragmentDetailBinding
 import com.example.pazaramapokedex.domain.model.Type
 import com.example.pazaramapokedex.presentation.adapters.TypesAdapter
@@ -44,7 +46,7 @@ class DetailFragment @Inject constructor(
         super.onCreate(savedInstanceState)
 
         arguments.let {
-            var id = it?.getInt("id")!!
+            deneme = it?.getInt("id")!!
         }
     }
 
@@ -153,7 +155,7 @@ class DetailFragment @Inject constructor(
 
     private fun setColors(data: SinglePokemonResponse) {
 
-        val color = PokemonTypeUtils.getTypeColor(data?.types?.get(0)?.type?.name!!)
+        val color = ContextCompat.getColor(requireContext(),PokemonTypeUtils.getTypeColor(data.types[0].type?.name!!))
 
         binding.header.setBackgroundColor(color)
 
