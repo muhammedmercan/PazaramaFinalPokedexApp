@@ -22,6 +22,7 @@ import com.example.pazaramapokedex.presentation.adapters.TypesAdapter
 import com.example.pazaramapokedex.utils.PokemonTypeUtils
 import com.example.pazaramapokedex.utils.Status
 import com.example.pazaramapokedex.utils.capitalize
+import com.example.pazaramapokedex.utils.formatId
 import com.example.pazaramapokedex.utils.loadImage
 import com.example.pokedex.domain.model.SinglePokemonResponse
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,14 +40,14 @@ class DetailFragment @Inject constructor(
 
     lateinit var viewModel: DetailViewModel
 
-    var deneme : Int = 0
+    var pokemonId : Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments.let {
-            deneme = it?.getInt("id")!!
+            pokemonId = it?.getInt("id")!!
         }
     }
 
@@ -69,7 +70,7 @@ class DetailFragment @Inject constructor(
         binding.ribbonRecyclerView.adapter = typesRecyclerAdapter
         binding.ribbonRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL,false)
 
-        viewModel.getSinglePokemon(deneme)
+        viewModel.getSinglePokemon(pokemonId)
 
         onClick()
         subscribeToObservers()
@@ -91,7 +92,6 @@ class DetailFragment @Inject constructor(
                     setText(data)
 
                     binding.progressbar.visibility = View.GONE
-                    binding.header.visibility = View.VISIBLE
 
                 }
 
@@ -131,6 +131,8 @@ class DetailFragment @Inject constructor(
 
             }
 
+        binding.pokemonNumber.text = pokemonId.toString().formatId(pokemonId)
+
         binding.imgPokemon.loadImage(data.sprites.other.officialArtwork.frontDefault)
 
         binding.txtPokemonName.text = data?.name?.capitalize()
@@ -157,7 +159,8 @@ class DetailFragment @Inject constructor(
 
         val color = ContextCompat.getColor(requireContext(),PokemonTypeUtils.getTypeColor(data.types[0].type?.name!!))
 
-        binding.header.setBackgroundColor(color)
+
+        binding.layoutFragmentDetail.setBackgroundColor(color)
 
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         activity?.window?.statusBarColor = color

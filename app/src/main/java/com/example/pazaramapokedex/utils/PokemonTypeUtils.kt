@@ -5,7 +5,6 @@ import com.example.pazaramapokedex.R
 object PokemonTypeUtils {
 
     fun getTypeColor(type: String): Int {
-        println(type)
         return when (type) {
             "normal" -> R.color.type_normal
             "fighting" -> R.color.type_fighting

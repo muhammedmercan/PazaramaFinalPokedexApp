@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pazaramapokedex.databinding.ItemPokemonBinding
 import com.example.pazaramapokedex.utils.extractId
+import com.example.pazaramapokedex.utils.formatId
 import com.example.pazaramapokedex.utils.loadImage
 import com.example.pokedex.domain.model.Result
 
@@ -49,12 +50,16 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+        val pokemonId = pokemonResponseList[position].url?.extractId()
+
+        holder.binding.txtItemPokemonId.text = pokemonId.toString().formatId(pokemonId!!)
+
         holder.binding.name.text = pokemonResponseList[position].name
         holder.binding.imgPokemon.loadImage(pokemonResponseList[position].getImageUrl())
 
         holder.itemView.setOnClickListener() {
             onItemClickListener?.let {
-                it(pokemonResponseList[position].url?.extractId()!!)
+                it(pokemonId)
             }
         }
 
