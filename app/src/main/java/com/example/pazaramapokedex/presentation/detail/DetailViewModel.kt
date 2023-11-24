@@ -18,9 +18,6 @@ class DetailViewModel @Inject constructor(
 
 ) : ViewModel() {
 
-
-    //val pokemonDetails = MutableLiveData<Resource<SinglePokemonResponse>>()
-
     private var pokemonDetails = MutableLiveData<Resource<SinglePokemonResponse>>()
     val pokemonList : LiveData<Resource<SinglePokemonResponse>>
         get() = pokemonDetails
@@ -29,8 +26,7 @@ class DetailViewModel @Inject constructor(
         pokemonDetails = MutableLiveData<Resource<SinglePokemonResponse>>()
     }
 
-
-    fun getSinglePokemon(id: Int) {
+    fun getSinglePokemon(id: String) {
 
         viewModelScope.launch {
 

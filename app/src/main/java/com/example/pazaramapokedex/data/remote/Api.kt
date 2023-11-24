@@ -18,7 +18,7 @@ interface Api {
 
     @GET("pokemon/{id}/")
     suspend fun getSinglePokemon(
-        @Path("id") id: Int
+        @Path("id") id: String
     ): Response<SinglePokemonResponse>
 
 

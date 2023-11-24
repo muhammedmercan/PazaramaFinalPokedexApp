@@ -8,6 +8,7 @@ import com.example.pazaramapokedex.domain.repository.RepositoryInterface
 import com.example.pazaramapokedex.utils.Resource
 import com.example.pazaramapokedex.utils.extractId
 import com.example.pokedex.domain.model.PokemonResponse
+import com.example.pokedex.domain.model.SinglePokemonResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,6 +23,16 @@ class MainViewModel @Inject constructor(
         get() = pokemons
 
 
+    private var pokemonDetails = MutableLiveData<Resource<SinglePokemonResponse>>()
+    val pokemonDetailList : LiveData<Resource<SinglePokemonResponse>>
+        get() = pokemonDetails
+
+
+    private var sortChoice = MutableLiveData("number")
+    val choice : LiveData<String>
+        get() = sortChoice
+
+
     fun getPokemons(limit : Int, offset : Int)   {
 
         viewModelScope.launch {
@@ -29,5 +40,21 @@ class MainViewModel @Inject constructor(
             pokemons.value = repository.getPokemons(limit,offset)
 
         }
+    }
+
+    fun getSinglePokemon(id: String) {
+
+        viewModelScope.launch {
+
+            var response = repository.getSinglePokemon(id)
+            //TODO bunun böyle yapılıp yapılmadıgına bakılacak
+            pokemonDetails.value = response
+
+        }
+    }
+
+    fun setChoice(choiceString :String) {
+
+        sortChoice.value = choiceString
     }
 }

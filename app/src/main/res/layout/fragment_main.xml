@@ -7,20 +7,11 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:clipToPadding="false"
+    android:padding="5dp"
     tools:context=".presentation.main.MainFragment">
 
-    <com.google.android.material.search.SearchBar
-        android:id="@+id/search_bar"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        app:backgroundTint="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        app:navigationIconTint="@color/colorPrimary"
-        tools:layout_editor_absoluteX="16dp">
 
-    </com.google.android.material.search.SearchBar>
-
-<com.google.android.material.appbar.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,15 +25,49 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+
+    <EditText
+        android:id="@+id/searchBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+
+
+        android:background="@drawable/edit_text_shape"
+        android:drawableLeft="@drawable/search"
+        android:drawableRight="@drawable/close"
+        android:drawablePadding="8dp"
+        android:freezesText="true"
+        android:hint="Search"
+        android:imeOptions="actionSearch"
+        android:paddingLeft="12dp"
+        android:paddingTop="7dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="7dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray_21"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/btnSort"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+    </EditText>
+
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
         app:cardCornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_bar">
+        app:layout_constraintTop_toBottomOf="@+id/searchBar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -78,15 +103,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/btnSort"
         style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:clickable="true"
-        android:src="@drawable/pokeball_small"
         app:backgroundTint="@color/white"
-        tools:layout_editor_absoluteX="318dp"
-        tools:layout_editor_absoluteY="72dp" />
+        app:tint="@color/colorPrimary"
+
+        app:fabCustomSize="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/searchBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/searchBar"
+        app:srcCompat="@drawable/tag" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -32,7 +32,7 @@ class Repository @Inject constructor(
 
     }
 
-    override suspend fun getSinglePokemon(id : Int) : Resource<SinglePokemonResponse> {
+    override suspend fun getSinglePokemon(id : String) : Resource<SinglePokemonResponse> {
 
         return try {
 
@@ -48,9 +48,5 @@ class Repository @Inject constructor(
             Resource.error("No data!",null)
         }
     }
-
-
-
-
 
 }

@@ -8,7 +8,7 @@ interface RepositoryInterface {
 
     suspend fun getPokemons(limit : Int, offset : Int) : Resource<PokemonResponse>
 
-    suspend fun getSinglePokemon(id : Int) : Resource<SinglePokemonResponse>
+    suspend fun getSinglePokemon(id : String) : Resource<SinglePokemonResponse>
 
 
 }

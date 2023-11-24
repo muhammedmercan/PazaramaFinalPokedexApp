@@ -52,14 +52,14 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
 
         val pokemonId = pokemonResponseList[position].url?.extractId()
 
-        holder.binding.txtItemPokemonId.text = pokemonId.toString().formatId(pokemonId!!)
+        holder.binding.txtItemPokemonId.text = pokemonId?.formatId()
 
         holder.binding.name.text = pokemonResponseList[position].name
         holder.binding.imgPokemon.loadImage(pokemonResponseList[position].getImageUrl())
 
         holder.itemView.setOnClickListener() {
             onItemClickListener?.let {
-                it(pokemonId)
+                it(pokemonId!!)
             }
         }
 

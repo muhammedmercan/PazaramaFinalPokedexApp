@@ -9,7 +9,6 @@
     android:clipToPadding="false"
     tools:context=".presentation.detail.DetailFragment">
 
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScroll"
         android:layout_width="match_parent"

@@ -17,6 +17,17 @@ fun ImageView.loadImage(url: String) {
         .into(this)
 }
 
-fun String.formatId(id: Int): String {
-    return "#" + String.format("%03d", id)
+fun Int.formatId(): String {
+    return "#" + String.format("%03d", this)
+}
+
+fun String.removeLeadingZeros(): String {
+
+    var result = this.trimStart('0')
+
+    if (result.startsWith("#")) {
+        result = result.substring(1)
+    }
+
+    return result
 }

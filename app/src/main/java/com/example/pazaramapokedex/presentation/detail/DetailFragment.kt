@@ -40,14 +40,14 @@ class DetailFragment @Inject constructor(
 
     lateinit var viewModel: DetailViewModel
 
-    var pokemonId : Int = 0
+    var pokemonId : String = "0"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments.let {
-            pokemonId = it?.getInt("id")!!
+            pokemonId = it?.getInt("id").toString()!!
         }
     }
 
@@ -131,7 +131,7 @@ class DetailFragment @Inject constructor(
 
             }
 
-        binding.pokemonNumber.text = pokemonId.toString().formatId(pokemonId)
+        binding.pokemonNumber.text = pokemonId.toInt().formatId()
 
         binding.imgPokemon.loadImage(data.sprites.other.officialArtwork.frontDefault)
 
