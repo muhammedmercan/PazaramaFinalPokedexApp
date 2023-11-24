@@ -13,6 +13,10 @@ fun String.capitalize(): String {
 fun ImageView.loadImage(url: String) {
     Glide.with(this)
         .load(url)
-        .error(R.drawable.pokeball)
+        .error(R.drawable.pokeball_large)
         .into(this)
+}
+
+fun String.formatId(id: Int): String {
+    return "#" + String.format("%03d", id)
 }
