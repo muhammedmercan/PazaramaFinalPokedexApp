@@ -6,5 +6,5 @@ data class DetailState (
 
     val isLoading : Boolean = false,
     val details : PokemonDetails? = null,
-    val error : String = ""
+    val error : String ?= null
 )

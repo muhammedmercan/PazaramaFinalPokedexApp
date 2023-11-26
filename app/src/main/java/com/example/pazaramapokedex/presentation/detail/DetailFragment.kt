@@ -27,6 +27,7 @@ import com.example.pazaramapokedex.utils.formatId
 import com.example.pazaramapokedex.utils.loadImage
 import com.example.pokedex.domain.model.PokemonDetails
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -75,6 +76,7 @@ class DetailFragment @Inject constructor(
 
         viewModel.getSinglePokemon(pokemonId)
 
+
         onClick()
         subscribeToObservers()
 
@@ -85,7 +87,7 @@ class DetailFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                viewModel.pokemonDetail.collect() { detailState ->
+                viewModel.uiState.collect() { detailState ->
 
                     binding.progressbar.isVisible = detailState.isLoading
 
@@ -99,8 +101,6 @@ class DetailFragment @Inject constructor(
                         setText(it!!)
                         setColors(it!!)
                         typesRecyclerAdapter.typeList = it.types
-
-
 
                     }
                 }
@@ -128,6 +128,9 @@ class DetailFragment @Inject constructor(
                 "speed" -> speed= i.baseStat!!
 
             }
+
+        binding.ability1.text = data.ability1
+        binding.ability2.text = data.ability2
 
         binding.pokemonNumber.text = pokemonId.toInt().formatId()
 

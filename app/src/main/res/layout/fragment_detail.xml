@@ -385,14 +385,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/txtAboutTittle" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-                        app:layout_constraintStart_toEndOf="@+id/divider3"
-                        app:layout_constraintTop_toTopOf="@+id/divider3" />
-
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline3"
                         android:layout_width="wrap_content"
@@ -423,10 +415,11 @@
                         android:id="@+id/textView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:text="@string/moves"
-                        app:layout_constraintBottom_toBottomOf="@+id/divider3"
-                        app:layout_constraintEnd_toEndOf="@+id/recyclerView2"
-                        app:layout_constraintStart_toStartOf="@+id/recyclerView2" />
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                        app:layout_constraintStart_toEndOf="@+id/divider3"
+                        app:layout_constraintTop_toBottomOf="@+id/ability2" />
 
                     <TextView
                         android:id="@+id/textView3"
@@ -438,6 +431,25 @@
                         app:layout_constraintStart_toStartOf="@+id/guideline4"
                         app:layout_constraintTop_toBottomOf="@+id/divider2"
                         tools:text="There is a plant seed on its back right from the day this Pokémon is born. The seed slowly grows larger." />
+
+                    <TextView
+                        android:id="@+id/ability1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chlorophyll"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                        app:layout_constraintStart_toEndOf="@+id/divider3"
+                        app:layout_constraintTop_toTopOf="@+id/divider3" />
+
+                    <TextView
+                        android:id="@+id/ability2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="Overgrow"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                        app:layout_constraintStart_toEndOf="@+id/divider3"
+                        app:layout_constraintTop_toBottomOf="@+id/ability1" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

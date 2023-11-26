@@ -59,9 +59,10 @@ class MainViewModel @Inject constructor(
 
         val currentData = pokemons.value.pokemons?.toMutableList() ?: mutableListOf()
 
+        pokemons.value = MainState(isLoading = true)
 
-
-        GetPokemonsUseCase.executeGetPokemons(limit,offset).onEach { list ->
+        viewModelScope.launch(Dispatchers.IO) {
+        GetPokemonsUseCase.executeGetPokemons(limit,offset).collect() { list ->
 
                 when(list) {
 
@@ -69,12 +70,9 @@ class MainViewModel @Inject constructor(
 
                         currentData.addAll(list.data!!)
 
+                        pokemons.value = MainState(pokemons = list.data ?: emptyList(),
+                            isLoading = false)
 
-                        pokemons.update {
-                            it.copy(
-                                pokemons = currentData
-                            )
-                        }
 
                         //pokemons.value = pokemons.value.copyMainState(pokemons = currentData?.plus(list.data!!) ?: emptyList())
                         currentPage++
@@ -90,26 +88,31 @@ class MainViewModel @Inject constructor(
 
                     else -> {}
                 }
-            }.launchIn(viewModelScope)
-        }
-
+            }
+        }}
 
     fun getSinglePokemon(id: String) {
 
         currentPage--
 
-        viewModelScope.launch {
+        pokemons.value = MainState(isLoading = true)
+
+
+        viewModelScope.launch(Dispatchers.IO) {
 
             getSinglePokemonUseCase.executeGetSinglePokemon(id).collect {
 
                 when(it) {
 
+
                     is Resource.Success -> {
-                        pokemons.value = MainState(pokemons = listOf(PokemonBasic(it.data?.id!!,1,"","",it.data.name!!,SINGLE_BASE_URL + it.data.id )))
+                        pokemons.value = MainState(pokemons = listOf(PokemonBasic(it.data?.id!!,1,"","",it.data.name!!,SINGLE_BASE_URL + it.data.id )),
+                            isLoading = false)
                     }
 
                     is Resource.Error -> {
-                        pokemons.value = MainState(error = it.message ?: "Error!")
+                        pokemons.value = MainState(error = it.message ?: "Error!",
+                            isLoading = false)
                     }
 
                     is Resource.Loading -> {

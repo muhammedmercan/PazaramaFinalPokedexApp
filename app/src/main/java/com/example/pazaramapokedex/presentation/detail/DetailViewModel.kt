@@ -11,9 +11,11 @@ import com.example.pazaramapokedex.presentation.main.MainState
 import com.example.pazaramapokedex.utils.Resource
 import com.example.pokedex.domain.model.PokemonDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,17 +26,20 @@ class DetailViewModel @Inject constructor(
 
 ) : ViewModel() {
 
-    private var pokemonDetails = MutableStateFlow<DetailState>(DetailState())
-    val pokemonDetail : StateFlow<DetailState>
-        get() = pokemonDetails
+    private var _uiState = MutableStateFlow<DetailState>(DetailState())
+    val uiState : StateFlow<DetailState>
+        get() = _uiState
+
 
     fun resetpokemonDetails() {
-        pokemonDetails = MutableStateFlow<DetailState>(DetailState())
+        _uiState = MutableStateFlow<DetailState>(DetailState())
     }
 
     fun getSinglePokemon(id: String) {
 
-        viewModelScope.launch {
+        _uiState.value = DetailState(isLoading = true)
+
+        viewModelScope.launch(Dispatchers.IO) {
 
             getSinglePokemonUseCase.executeGetSinglePokemon(id).collect {
 
@@ -42,16 +47,18 @@ class DetailViewModel @Inject constructor(
 
                     is Resource.Success -> {
 
-                        pokemonDetails.value = DetailState(details = it.data)
+                        _uiState.value = DetailState(details = it.data,
+                            isLoading = false)
 
                     }
 
                     is Resource.Error -> {
-                        pokemonDetails.value = DetailState(error = it.message ?: "Error!")
+                        _uiState.value = DetailState(error = it.message ?: "Error!",
+                            isLoading = false)
                     }
 
                     is Resource.Loading -> {
-                        pokemonDetails.value = DetailState(isLoading = true)
+                        _uiState.value = DetailState(isLoading = true)
                     }
                 }
             }

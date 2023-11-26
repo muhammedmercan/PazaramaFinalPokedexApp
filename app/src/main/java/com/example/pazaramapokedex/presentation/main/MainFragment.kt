@@ -84,7 +84,7 @@ class MainFragment @Inject constructor(
                 }
 
                     val data = pokemonRecyclerAdapter.pokemonResponseList
-                    pokemonRecyclerAdapter.pokemonResponseList = mainState.pokemons!!
+                    pokemonRecyclerAdapter.pokemonResponseList = data + mainState.pokemons!!
 
             }
         }
