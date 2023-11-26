@@ -10,22 +10,25 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.pazaramapokedex.R
 import com.example.pazaramapokedex.databinding.FragmentDetailBinding
-import com.example.pazaramapokedex.domain.model.Type
 import com.example.pazaramapokedex.presentation.adapters.TypesAdapter
 import com.example.pazaramapokedex.utils.PokemonTypeUtils
-import com.example.pazaramapokedex.utils.Status
 import com.example.pazaramapokedex.utils.capitalize
 import com.example.pazaramapokedex.utils.formatId
 import com.example.pazaramapokedex.utils.loadImage
-import com.example.pokedex.domain.model.SinglePokemonResponse
+import com.example.pokedex.domain.model.PokemonDetails
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 import javax.inject.Inject
 
@@ -79,39 +82,33 @@ class DetailFragment @Inject constructor(
 
     private fun subscribeToObservers() {
 
-        viewModel.pokemonList.observe(viewLifecycleOwner, Observer { singlePokemonResponse ->
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-            when(singlePokemonResponse.status){
-                Status.SUCCESS -> {
+                viewModel.pokemonDetail.collect() { detailState ->
 
-                    val data = singlePokemonResponse.data
+                    binding.progressbar.isVisible = detailState.isLoading
 
-                    typesRecyclerAdapter.typeList = data?.types as MutableList<Type>
+                    detailState.error?.let {
+                        binding.progressbar.isVisible = detailState.isLoading
 
-                    setColors(data)
-                    setText(data)
+                    }
 
-                    binding.progressbar.visibility = View.GONE
+                    detailState.details?.let {
+                        println(it)
+                        setText(it!!)
+                        setColors(it!!)
+                        typesRecyclerAdapter.typeList = it.types
 
-                }
 
-                Status.ERROR -> {
-                    Toast.makeText(requireContext(),singlePokemonResponse.message ?: "Error", Toast.LENGTH_LONG).show()
-                    binding.progressbar.visibility = View.GONE
 
-                }
-
-                Status.LOADING -> {
-
-                    binding.progressbar.visibility = View.VISIBLE
-
+                    }
                 }
             }
-        })
-
+        }
     }
 
-    private fun setText(data: SinglePokemonResponse) {
+    private fun setText(data: PokemonDetails) {
 
         var hp = 0
         var attack = 0
@@ -120,20 +117,21 @@ class DetailFragment @Inject constructor(
         var specialDefense = 0
         var speed = 0
 
+
         for (i in data?.stats!!)
-            when (i.stat.name) {
-                "hp" -> hp = i.base_stat
-                "attack" -> attack = i.base_stat
-                "defense" -> defense = i.base_stat
-                "special-attack" -> specialAttack= i.base_stat
-                "special-defense" -> specialDefense= i.base_stat
-                "speed" -> speed= i.base_stat
+            when (i.stat?.name) {
+                "hp" -> hp = i.baseStat!!
+                "attack" -> attack = i.baseStat!!
+                "defense" -> defense = i.baseStat!!
+                "special-attack" -> specialAttack= i.baseStat!!
+                "special-defense" -> specialDefense= i.baseStat!!
+                "speed" -> speed= i.baseStat!!
 
             }
 
         binding.pokemonNumber.text = pokemonId.toInt().formatId()
 
-        binding.imgPokemon.loadImage(data.sprites.other.officialArtwork.frontDefault)
+        binding.imgPokemon.loadImage(data.img!!)
 
         binding.txtPokemonName.text = data?.name?.capitalize()
 
@@ -155,9 +153,9 @@ class DetailFragment @Inject constructor(
 
     }
 
-    private fun setColors(data: SinglePokemonResponse) {
+    private fun setColors(data: PokemonDetails) {
 
-        val color = ContextCompat.getColor(requireContext(),PokemonTypeUtils.getTypeColor(data.types[0].type?.name!!))
+        val color = ContextCompat.getColor(requireContext(),PokemonTypeUtils.getTypeColor(data.types.get(0)))
 
 
         binding.layoutFragmentDetail.setBackgroundColor(color)

@@ -1,4 +1,4 @@
-package com.example.pazaramapokedex.domain.model
+package com.example.pazaramapokedex.data.remote.dto
 
 
 import com.google.gson.annotations.SerializedName

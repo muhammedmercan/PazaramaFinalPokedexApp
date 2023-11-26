@@ -4,12 +4,23 @@ package com.example.pokedex.domain.model
 import com.example.pazaramapokedex.utils.extractId
 import com.google.gson.annotations.SerializedName
 
-data class Result(
-    @SerializedName("name")
-    val name: String?,
-    @SerializedName("url")
-    val url: String?
+data class PokemonBasic(
 
+    val id: Int,
+
+    @SerializedName("count")
+    val count: Int? = 0,
+    @SerializedName("next")
+    val next: String? = "",
+    @SerializedName("previous")
+    val previous: Any? = "",
+
+
+    //@SerializedName("results")
+    //val results: List<Result?>?,
+
+    val name: String?,
+    val url: String?
 ) {
 
     fun getImageUrl(): String {

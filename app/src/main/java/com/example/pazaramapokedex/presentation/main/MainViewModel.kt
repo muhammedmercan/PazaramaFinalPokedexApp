@@ -5,51 +5,120 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pazaramapokedex.domain.repository.RepositoryInterface
+import com.example.pazaramapokedex.domain.use_case.GetPokemonsUseCase
+import com.example.pazaramapokedex.domain.use_case.getSinglePokemonUseCase
+import com.example.pazaramapokedex.presentation.detail.DetailState
+import com.example.pazaramapokedex.utils.Constants.BASE_URL
+import com.example.pazaramapokedex.utils.Constants.SINGLE_BASE_URL
 import com.example.pazaramapokedex.utils.Resource
-import com.example.pazaramapokedex.utils.extractId
-import com.example.pokedex.domain.model.PokemonResponse
-import com.example.pokedex.domain.model.SinglePokemonResponse
+import com.example.pokedex.domain.model.PokemonBasic
+import com.example.pokedex.domain.model.PokemonDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository : RepositoryInterface
+    private val GetPokemonsUseCase: GetPokemonsUseCase,
+    private val getSinglePokemonUseCase: getSinglePokemonUseCase
 ) : ViewModel() {
 
-    private var pokemons = MutableLiveData<Resource<PokemonResponse>>()
-    val pokemonList : LiveData<Resource<PokemonResponse>>
-        get() = pokemons
+    private var pokemons = MutableStateFlow(MainState())
+    val pokemonList : StateFlow<MainState> = pokemons.asStateFlow()
 
 
-    private var pokemonDetails = MutableLiveData<Resource<SinglePokemonResponse>>()
-    val pokemonDetailList : LiveData<Resource<SinglePokemonResponse>>
+
+    private var pokemonDetails = MutableStateFlow<DetailState>(DetailState())
+    val pokemonDetail : StateFlow<DetailState>
         get() = pokemonDetails
-
 
     private var sortChoice = MutableLiveData("number")
     val choice : LiveData<String>
         get() = sortChoice
 
+    private var job : Job? = null
 
-    fun getPokemons(limit : Int, offset : Int)   {
 
-        viewModelScope.launch {
+    private var currentPage = 0
+    private val pageSize = 20
 
-            pokemons.value = repository.getPokemons(limit,offset)
+    fun getPokemons()   {
 
+        val limit = pageSize
+        val offset = currentPage * pageSize
+
+        val currentData = pokemons.value.pokemons?.toMutableList() ?: mutableListOf()
+
+
+
+        GetPokemonsUseCase.executeGetPokemons(limit,offset).onEach { list ->
+
+                when(list) {
+
+                    is Resource.Success -> {
+
+                        currentData.addAll(list.data!!)
+
+
+                        pokemons.update {
+                            it.copy(
+                                pokemons = currentData
+                            )
+                        }
+
+                        //pokemons.value = pokemons.value.copyMainState(pokemons = currentData?.plus(list.data!!) ?: emptyList())
+                        currentPage++
+                    }
+
+                    is Resource.Error -> {
+                        pokemons.value = MainState(error = list.message ?: "Error!")
+                    }
+
+                    is Resource.Loading -> {
+                        pokemons.value = MainState(isLoading = true)
+                    }
+
+                    else -> {}
+                }
+            }.launchIn(viewModelScope)
         }
-    }
+
 
     fun getSinglePokemon(id: String) {
 
+        currentPage--
+
         viewModelScope.launch {
 
-            var response = repository.getSinglePokemon(id)
-            //TODO bunun böyle yapılıp yapılmadıgına bakılacak
-            pokemonDetails.value = response
+            getSinglePokemonUseCase.executeGetSinglePokemon(id).collect {
 
+                when(it) {
+
+                    is Resource.Success -> {
+                        pokemons.value = MainState(pokemons = listOf(PokemonBasic(it.data?.id!!,1,"","",it.data.name!!,SINGLE_BASE_URL + it.data.id )))
+                    }
+
+                    is Resource.Error -> {
+                        pokemons.value = MainState(error = it.message ?: "Error!")
+                    }
+
+                    is Resource.Loading -> {
+                        pokemons.value = MainState(isLoading = true)
+                    }
+
+                    else -> {}
+                }
+            }
         }
     }
 

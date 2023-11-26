@@ -1,11 +1,9 @@
 package com.example.pazaramapokedex.data.repository
 
 import com.example.pazaramapokedex.data.remote.Api
+import com.example.pazaramapokedex.data.remote.dto.PokemonBasicDto
+import com.example.pazaramapokedex.data.remote.dto.PokemonDetailsDto
 import com.example.pazaramapokedex.domain.repository.RepositoryInterface
-import com.example.pazaramapokedex.utils.Resource
-import com.example.pokedex.domain.model.PokemonResponse
-import com.example.pokedex.domain.model.SinglePokemonResponse
-import java.lang.Exception
 import javax.inject.Inject
 
 
@@ -14,39 +12,15 @@ class Repository @Inject constructor(
 )
     : RepositoryInterface {
 
+    override suspend fun getPokemons(limit : Int, offset : Int) : PokemonBasicDto {
 
-    override suspend fun getPokemons(limit : Int, offset : Int) : Resource<PokemonResponse> {
-
-        return try {
-            val response = retrofitApi.getPokemons(limit,offset)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    return@let Resource.success(it)
-                } ?: Resource.error("Error",null)
-            } else {
-                Resource.error("Error",null)
-            }
-        } catch (e: Exception) {
-            Resource.error("No data!",null)
-        }
+        return retrofitApi.getPokemons(limit,offset)
 
     }
 
-    override suspend fun getSinglePokemon(id : String) : Resource<SinglePokemonResponse> {
+    override suspend fun getSinglePokemon(id : String) : PokemonDetailsDto {
 
-        return try {
+        return retrofitApi.getSinglePokemon(id)
 
-            val response = retrofitApi.getSinglePokemon(id)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    return@let Resource.success(it)
-                } ?: Resource.error("Error",null)
-            } else {
-                Resource.error("Error",null)
-            }
-        } catch (e: Exception) {
-            Resource.error("No data!",null)
-        }
     }
-
 }

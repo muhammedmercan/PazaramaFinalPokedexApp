@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pazaramapokedex.databinding.ItemTypeBinding
-import com.example.pazaramapokedex.domain.model.Type
 import com.example.pazaramapokedex.utils.PokemonTypeUtils
 import com.example.pazaramapokedex.utils.capitalize
 import javax.inject.Inject
@@ -16,19 +15,19 @@ class TypesAdapter @Inject constructor() : RecyclerView.Adapter<TypesAdapter.Vie
 
     class ViewHolder(val binding: ItemTypeBinding) : RecyclerView.ViewHolder(binding.root)
 
-    private val diffUtil = object : DiffUtil.ItemCallback<Type>() {
-        override fun areItemsTheSame(oldItem: Type, newItem: Type): Boolean {
+    private val diffUtil = object : DiffUtil.ItemCallback<String>() {
+        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: Type, newItem: Type): Boolean {
+        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
             return oldItem == newItem
         }
     }
 
     private val recyclerListDiffer = AsyncListDiffer(this, diffUtil)
 
-    var typeList: MutableList<Type>
+    var typeList: List<String>
         get() = recyclerListDiffer.currentList
         set(value) = recyclerListDiffer.submitList(value)
 
@@ -44,7 +43,7 @@ class TypesAdapter @Inject constructor() : RecyclerView.Adapter<TypesAdapter.Vie
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val type = typeList[position].type?.name
+        val type = typeList[position]
         val color = PokemonTypeUtils.getTypeColor(type!!)
 
         holder.binding.txtItemType.setBackgroundResource(color)

@@ -1,14 +1,13 @@
 package com.example.pazaramapokedex.domain.repository
 
-import com.example.pazaramapokedex.utils.Resource
-import com.example.pokedex.domain.model.PokemonResponse
-import com.example.pokedex.domain.model.SinglePokemonResponse
+import com.example.pazaramapokedex.data.remote.dto.PokemonBasicDto
+import com.example.pazaramapokedex.data.remote.dto.PokemonDetailsDto
 
 interface RepositoryInterface {
 
-    suspend fun getPokemons(limit : Int, offset : Int) : Resource<PokemonResponse>
+    suspend fun getPokemons(limit : Int, offset : Int) : PokemonBasicDto
 
-    suspend fun getSinglePokemon(id : String) : Resource<SinglePokemonResponse>
+    suspend fun getSinglePokemon(id : String) : PokemonDetailsDto
 
 
 }

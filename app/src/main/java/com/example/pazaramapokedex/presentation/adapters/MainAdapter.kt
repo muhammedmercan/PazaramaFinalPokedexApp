@@ -6,10 +6,9 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pazaramapokedex.databinding.ItemPokemonBinding
-import com.example.pazaramapokedex.utils.extractId
 import com.example.pazaramapokedex.utils.formatId
 import com.example.pazaramapokedex.utils.loadImage
-import com.example.pokedex.domain.model.Result
+import com.example.pokedex.domain.model.PokemonBasic
 
 import javax.inject.Inject
 
@@ -20,22 +19,24 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
 
     class ViewHolder(val binding: ItemPokemonBinding) : RecyclerView.ViewHolder(binding.root)
 
-    private val diffUtil = object : DiffUtil.ItemCallback<Result>() {
-        override fun areItemsTheSame(oldItem: Result, newItem: Result): Boolean {
-            return oldItem == newItem
+    private val diffUtil = object : DiffUtil.ItemCallback<PokemonBasic>() {
+        override fun areItemsTheSame(oldItem: PokemonBasic, newItem: PokemonBasic): Boolean {
+            return oldItem.id == newItem.id
         }
 
-        //TODO .name kısmına bakılacak
-        override fun areContentsTheSame(oldItem: Result, newItem: Result): Boolean {
-            return oldItem.url?.extractId() == newItem.url?.extractId()
+        override fun areContentsTheSame(oldItem: PokemonBasic, newItem: PokemonBasic): Boolean {
+
+            return  oldItem == newItem
+
         }
     }
 
     private val recyclerListDiffer = AsyncListDiffer(this, diffUtil)
 
-    var pokemonResponseList: MutableList<Result>
+    var pokemonResponseList: List<PokemonBasic>
         get() = recyclerListDiffer.currentList
         set(value) = recyclerListDiffer.submitList(value)
+
 
 
 
@@ -50,7 +51,7 @@ class MainAdapter @Inject constructor() : RecyclerView.Adapter<MainAdapter.ViewH
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val pokemonId = pokemonResponseList[position].url?.extractId()
+        val pokemonId = pokemonResponseList[position].id
 
         holder.binding.txtItemPokemonId.text = pokemonId?.formatId()
 

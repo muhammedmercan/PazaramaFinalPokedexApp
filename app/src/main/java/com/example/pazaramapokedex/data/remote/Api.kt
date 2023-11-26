@@ -1,8 +1,7 @@
 package com.example.pazaramapokedex.data.remote
 
-import com.example.pokedex.domain.model.PokemonResponse
-import com.example.pokedex.domain.model.SinglePokemonResponse
-import retrofit2.Response
+import com.example.pazaramapokedex.data.remote.dto.PokemonBasicDto
+import com.example.pazaramapokedex.data.remote.dto.PokemonDetailsDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -14,12 +13,12 @@ interface Api {
     suspend fun getPokemons(
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
-    ): Response<PokemonResponse>
+    ): PokemonBasicDto
 
     @GET("pokemon/{id}/")
     suspend fun getSinglePokemon(
         @Path("id") id: String
-    ): Response<SinglePokemonResponse>
+    ): PokemonDetailsDto
 
 
 }

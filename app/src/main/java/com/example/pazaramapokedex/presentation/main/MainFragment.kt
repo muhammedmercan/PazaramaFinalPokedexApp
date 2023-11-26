@@ -15,20 +15,22 @@ import android.widget.PopupWindow
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pazaramapokedex.R
 import com.example.pazaramapokedex.databinding.FragmentMainBinding
 import com.example.pazaramapokedex.presentation.adapters.MainAdapter
-import com.example.pazaramapokedex.utils.Constants.SINGLE_BASE_URL
-import com.example.pazaramapokedex.utils.Status
 import com.example.pazaramapokedex.utils.removeLeadingZeros
-import com.example.pokedex.domain.model.Result
-import com.example.pokedex.domain.model.SinglePokemonResponse
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -41,6 +43,9 @@ class MainFragment @Inject constructor(
     private val binding get() = _binding!!
     lateinit var viewModel: MainViewModel
 
+    private var currentPage = 1
+    private var totalAvailablePages = 1
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,7 +54,6 @@ class MainFragment @Inject constructor(
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,69 +61,34 @@ class MainFragment @Inject constructor(
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
         onClick()
-
-        viewModel.getPokemons(0, 0)
+        viewModel.getPokemons()
         subscribeToObservers()
         setColor()
+        onScroll()
 
         binding.recyclerView.adapter = pokemonRecyclerAdapter
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(),3)
-
         binding.searchBar.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.search,0,0,0)
-
     }
 
     private fun subscribeToObservers() {
 
-        viewModel.pokemonList.observe(viewLifecycleOwner, Observer { pokemonResponse ->
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.pokemonList.collect {mainState ->
 
-            when (pokemonResponse.status) {
-                Status.SUCCESS -> {
-                    binding.progressbar.visibility = View.GONE
+                binding.progressbar.isVisible = mainState.isLoading
 
-                    pokemonRecyclerAdapter.pokemonResponseList = pokemonResponse.data?.results as MutableList<Result>
-                }
-                Status.ERROR -> {
-                    Toast.makeText(
-                        requireContext(),
-                        pokemonResponse.message ?: "Error",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    binding.progressbar.visibility = View.GONE
+                mainState.error.let {
+                    Toast.makeText(requireContext(),"hata",Toast.LENGTH_SHORT)
                 }
 
-                Status.LOADING -> {
-                    binding.progressbar.visibility = View.VISIBLE
+                    val data = pokemonRecyclerAdapter.pokemonResponseList
+                    pokemonRecyclerAdapter.pokemonResponseList = mainState.pokemons!!
 
-                }
             }
-
-        })
-
-        viewModel.pokemonDetailList.observe(viewLifecycleOwner, Observer { pokemonResponse ->
-
-            when (pokemonResponse.status) {
-                Status.SUCCESS -> {
-                    binding.progressbar.visibility = View.GONE
-
-                    pokemonRecyclerAdapter.pokemonResponseList = mutableListOf(Result(pokemonResponse.data?.name,
-                        SINGLE_BASE_URL + pokemonResponse.data?.id))
-                }
-                Status.ERROR -> {
-                    Toast.makeText(
-                        requireContext(),
-                        pokemonResponse.message ?: "Error",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    binding.progressbar.visibility = View.GONE
-                }
-
-                Status.LOADING -> {
-                    binding.progressbar.visibility = View.VISIBLE
-
-                }
-            }
-        })
+        }
+    }
 
         viewModel.choice.observe(viewLifecycleOwner, Observer {
 
@@ -134,14 +103,13 @@ class MainFragment @Inject constructor(
                     binding.btnSort.setImageResource(R.drawable.tag)
                 }
             }
-
         })
     }
 
     private fun searchPokemon(){
 
         if (binding.searchBar.text.toString().isEmpty() || binding.searchBar.text.toString().equals("0")) {
-            viewModel.getPokemons(20,0)
+            viewModel.getPokemons()
         }
         else {
         when(viewModel.choice.value) {
@@ -156,6 +124,24 @@ class MainFragment @Inject constructor(
 
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0)
+    }
+
+    private fun onScroll() {
+
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+
+                if (dy > 0) {
+                    val canScrollDown = recyclerView.canScrollVertically(1)
+
+                    if (!canScrollDown) {
+                        viewModel.getPokemons()
+                    }
+                }
+            }
+        })
     }
 
     private fun onClick() {
