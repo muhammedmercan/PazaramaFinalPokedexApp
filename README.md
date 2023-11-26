@@ -39,6 +39,10 @@ https://github.com/muhammedmercan/PazaramaFinalPokedexApp/assets/58571212/9e424c
 
 
 ## Screenshots
-| Splash Screen | Main Screen | Details Screen | Search With Number | Search With Text |
-| --------------|-------------| ---------------| ------------------ | ---------------- |
-![Splash Screen](https://raw.githubusercontent.com/muhammedmercan/PazaramaFinalPokedexApp/master/screenshots/splash_screen.png)  | ![Main Screen](https://raw.githubusercontent.com/muhammedmercan/PazaramaFinalPokedexApp/master/screenshots/home_page.png) | ![Details Screen](https://raw.githubusercontent.com/muhammedmercan/PazaramaFinalPokedexApp/master/screenshots/detail_page.png) | ![Search With Number](https://raw.githubusercontent.com/muhammedmercan/PazaramaFinalPokedexApp/master/screenshots/search_with_number.png) | ![Search With Text](https://raw.githubusercontent.com/muhammedmercan/PazaramaFinalPokedexApp/master/screenshots/search_with_text.png) 
+| Splash Screen | Main Screen | Details Screen | 
+| --------------|-------------| ---------------| 
+![Splash Screen](https://raw.githubusercontent.com/muhammedmercan/PazaramaFinalPokedexApp/master/screenshots/splash_screen.png)  | ![Main Screen](https://raw.githubusercontent.com/muhammedmercan/PazaramaFinalPokedexApp/master/screenshots/home_page.png) | ![Details Screen](https://raw.githubusercontent.com/muhammedmercan/PazaramaFinalPokedexApp/master/screenshots/detail_page.png) | 
+
+| Search With Number | Search With Text |
+| ------------------ | ---------------- |
+![Search With Number](https://raw.githubusercontent.com/muhammedmercan/PazaramaFinalPokedexApp/master/screenshots/search_with_number.png) | ![Search With Text](https://raw.githubusercontent.com/muhammedmercan/PazaramaFinalPokedexApp/master/screenshots/search_with_text.png) 
