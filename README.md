@@ -1,5 +1,5 @@
 ## Pokedex
-This application represents the final project of the Pazarama Android Bootcamp, developed as an individual endeavor. It involves the listing and detailed information of Pokémon using data obtained from the [OMDb Api](https://pokeapi.co/).
+This application represents the final project of the Pazarama Android Bootcamp, developed as an individual endeavor. It involves the listing and detailed information of Pokémon using data obtained from the [PokeAPI](https://pokeapi.co/).
 
 
 
