@@ -9,10 +9,6 @@ data class PokemonDetailsDto(
     val abilities: List<Ability>?,
     @SerializedName("base_experience")
     val baseExperience: Int?,
-    //@SerializedName("forms")
-    //val forms: List<Form>?,
-    //@SerializedName("game_indices")
-    //val gameİndices: List<Gameİndice>?,
     @SerializedName("height")
     val height: Int?,
     @SerializedName("held_items")
@@ -23,8 +19,6 @@ data class PokemonDetailsDto(
     val isDefault: Boolean?,
     @SerializedName("location_area_encounters")
     val locationAreaEncounters: String?,
-    //@SerializedName("moves")
-    //val moves: List<Move>?,
     @SerializedName("name")
     val name: String?,
     @SerializedName("order")
@@ -33,8 +27,6 @@ data class PokemonDetailsDto(
     val pastAbilities: List<Any>?,
     @SerializedName("past_types")
     val pastTypes: List<Any>?,
-    //@SerializedName("species")
-    //val species: Species?,
     @SerializedName("sprites")
     val sprites: Sprites?,
     @SerializedName("stats")
@@ -44,8 +36,8 @@ data class PokemonDetailsDto(
     @SerializedName("weight")
     val weight: Int?
 )
-    fun PokemonDetailsDto.toPokemonDetail() : PokemonDetails {
+fun PokemonDetailsDto.toPokemonDetail() : PokemonDetails {
 
-        return PokemonDetails(id!!,sprites?.other?.officialArtwork?.frontDefault,stats!!, name!!, height!!, weight!!, types?.map { types -> types.type?.name!! }!! )
+    return PokemonDetails(id!!,sprites?.other?.officialArtwork?.frontDefault,stats!!,abilities?.get(0)?.ability?.name!!, abilities?.get(1)?.ability?.name!!, name!!, height!!, weight!!, types?.map { types -> types.type?.name!! }!! )
 
-    }
+}
